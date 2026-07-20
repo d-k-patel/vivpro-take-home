@@ -151,7 +151,11 @@ export default function App() {
                     <th
                       key={c.key}
                       onClick={() => toggleSort(c.key)}
-                      className="px-4 py-3 text-left font-semibold text-slate-600 cursor-pointer select-none hover:text-indigo-600 transition-colors whitespace-nowrap"
+                      className={`px-4 py-3 text-left font-semibold text-slate-600 cursor-pointer select-none hover:text-indigo-600 transition-colors whitespace-nowrap ${
+                        c.key === "rating"
+                          ? "sticky right-0 bg-slate-50 border-l border-slate-200 shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.1)]"
+                          : ""
+                      }`}
                     >
                       {c.label}
                       <span className="text-indigo-500">
@@ -172,13 +176,18 @@ export default function App() {
                   displayRows.map((row, i) => (
                     <tr
                       key={row.id}
-                      className={`border-b border-slate-100 last:border-0 hover:bg-indigo-50/40 transition-colors ${
+                      className={`group border-b border-slate-100 last:border-0 hover:bg-indigo-50/40 transition-colors ${
                         i % 2 === 1 ? "bg-slate-50/60" : ""
                       }`}
                     >
                       {COLUMNS.map((c) =>
                         c.key === "rating" ? (
-                          <td key={c.key} className="px-4 py-2.5">
+                          <td
+                            key={c.key}
+                            className={`px-4 py-2.5 sticky right-0 border-l border-slate-200 shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.1)] group-hover:bg-indigo-50/40 transition-colors ${
+                              i % 2 === 1 ? "bg-slate-50/60" : "bg-white"
+                            }`}
+                          >
                             <StarRating value={row.rating} onRate={(n) => handleRate(row.id, n)} />
                           </td>
                         ) : (

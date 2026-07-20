@@ -1,0 +1,22 @@
+# generated data (produced by normalize.py / the API at runtime)
+data/songs.json
+data/conflicts.json
+data/ratings.json
+
+# python
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+*.pyc
+.pytest_cache/
+
+# node
+frontend/node_modules/
+frontend/dist/
+
+# editor/OS
+.DS_Store
+
+# source materials not part of the submission
+_source_materials/
+.playwright-mcp/

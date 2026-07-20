@@ -1,10 +1,10 @@
 export default function StarRating({ value, onRate }) {
   return (
-    <span className="stars">
+    <span className="cursor-pointer">
       {[1, 2, 3, 4, 5].map((n) => (
         <span
           key={n}
-          className={n <= (value || 0) ? "star filled" : "star"}
+          className={`text-base ${n <= (value || 0) ? "text-amber-400" : "text-gray-300"}`}
           onClick={() => onRate(n)}
         >
           &#9733;

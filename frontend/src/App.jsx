@@ -5,7 +5,6 @@ import {
 import { api } from "./api";
 import { COLUMNS, toCSV } from "./columns";
 import StarRating from "./StarRating";
-import "./App.css";
 
 const PAGE_SIZE = 10;
 
@@ -79,41 +78,58 @@ export default function App() {
   const displayRows = searchResult ? searchResult.items : data.items;
 
   return (
-    <div className="app">
-      <h1>Songs Dashboard</h1>
+    <div className="max-w-5xl mx-auto p-6 font-sans">
+      <h1 className="text-3xl font-bold mb-4">Songs Dashboard</h1>
 
-      <div className="toolbar">
+      <div className="flex gap-2 mb-3">
         <input
-          className="search-input"
+          className="flex-1 border border-gray-300 rounded px-3 py-1.5 text-sm"
           placeholder="Search by title…"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
-        <button onClick={handleSearch}>Get Song</button>
+        <button
+          className="px-3 py-1.5 rounded border border-gray-300 hover:bg-gray-100 cursor-pointer"
+          onClick={handleSearch}
+        >
+          Get Song
+        </button>
         {searchResult && (
-          <button onClick={() => { setSearchResult(null); setSearchInput(""); }}>
+          <button
+            className="px-3 py-1.5 rounded border border-gray-300 hover:bg-gray-100 cursor-pointer"
+            onClick={() => { setSearchResult(null); setSearchInput(""); }}
+          >
             Clear search
           </button>
         )}
-        <button onClick={downloadCSV}>Download CSV</button>
+        <button
+          className="px-3 py-1.5 rounded border border-gray-300 hover:bg-gray-100 cursor-pointer"
+          onClick={downloadCSV}
+        >
+          Download CSV
+        </button>
       </div>
 
-      {searchError && <p className="error">{searchError}</p>}
+      {searchError && <p className="text-red-600 mb-2">{searchError}</p>}
       {searchResult && searchResult.count === 0 && (
-        <p className="info">No songs match "{searchResult.query}".</p>
+        <p className="text-gray-600 mb-2">No songs match "{searchResult.query}".</p>
       )}
       {searchResult && searchResult.count > 1 && (
-        <p className="info">{searchResult.count} songs match "{searchResult.query}".</p>
+        <p className="text-gray-600 mb-2">{searchResult.count} songs match "{searchResult.query}".</p>
       )}
 
-      {error && <p className="error">Failed to load songs: {error}</p>}
+      {error && <p className="text-red-600 mb-2">Failed to load songs: {error}</p>}
 
-      <table>
+      <table className="w-full border-collapse text-sm">
         <thead>
           <tr>
             {COLUMNS.map((c) => (
-              <th key={c.key} onClick={() => toggleSort(c.key)}>
+              <th
+                key={c.key}
+                onClick={() => toggleSort(c.key)}
+                className="border border-gray-200 bg-gray-50 hover:bg-gray-100 px-2.5 py-1.5 text-left cursor-pointer select-none"
+              >
                 {c.label}
                 {sortBy === c.key ? (order === "asc" ? " ▲" : " ▼") : ""}
               </th>
@@ -122,17 +138,19 @@ export default function App() {
         </thead>
         <tbody>
           {loading && !searchResult ? (
-            <tr><td colSpan={COLUMNS.length}>Loading…</td></tr>
+            <tr><td className="border border-gray-200 px-2.5 py-1.5" colSpan={COLUMNS.length}>Loading…</td></tr>
           ) : (
             displayRows.map((row) => (
               <tr key={row.id}>
                 {COLUMNS.map((c) =>
                   c.key === "rating" ? (
-                    <td key={c.key}>
+                    <td key={c.key} className="border border-gray-200 px-2.5 py-1.5">
                       <StarRating value={row.rating} onRate={(n) => handleRate(row.id, n)} />
                     </td>
                   ) : (
-                    <td key={c.key}>{row[c.key] ?? <span className="null">—</span>}</td>
+                    <td key={c.key} className="border border-gray-200 px-2.5 py-1.5">
+                      {row[c.key] ?? <span className="text-gray-400 italic">—</span>}
+                    </td>
                   )
                 )}
               </tr>
@@ -142,15 +160,27 @@ export default function App() {
       </table>
 
       {!searchResult && (
-        <div className="pagination">
-          <button disabled={page <= 1} onClick={() => setPage(page - 1)}>Prev</button>
+        <div className="flex gap-3 items-center mt-3">
+          <button
+            className="px-3 py-1.5 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            disabled={page <= 1}
+            onClick={() => setPage(page - 1)}
+          >
+            Prev
+          </button>
           <span>Page {page} of {totalPages}</span>
-          <button disabled={page >= totalPages} onClick={() => setPage(page + 1)}>Next</button>
+          <button
+            className="px-3 py-1.5 rounded border border-gray-300 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+            disabled={page >= totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next
+          </button>
         </div>
       )}
 
-      <h2>Danceability vs. Energy</h2>
-      <p className="chart-note">
+      <h2 className="text-xl font-semibold mt-6 mb-1">Danceability vs. Energy</h2>
+      <p className="text-sm text-gray-500 mb-2">
         Current page only. Points near danceability &gt; 1 or missing energy
         reflect raw data issues — see DECISIONS.md for how they're flagged.
       </p>
@@ -163,7 +193,7 @@ export default function App() {
             cursor={{ strokeDasharray: "3 3" }}
             content={({ payload }) =>
               payload && payload[0] ? (
-                <div className="chart-tooltip">
+                <div className="bg-white border border-gray-300 px-2.5 py-1.5 text-sm">
                   <strong>{payload[0].payload.title}</strong>
                   <div>danceability: {payload[0].payload.danceability}</div>
                   <div>energy: {payload[0].payload.energy ?? "missing"}</div>

@@ -10,7 +10,20 @@ sortable/paginated table, CSV export, title search, ratings, and a
 danceability-vs-energy chart. `REVIEW.md` is a standalone code review of
 `review/buggy_api.py` and does not need the app running to read.
 
-## Requirements
+## Quickest path: Docker
+
+```bash
+docker compose up --build
+```
+
+Backend at `http://localhost:8000`, frontend at `http://localhost:5173`.
+The backend container runs `normalize.py` on startup before serving, so
+there's no separate step. `data/` is mounted from the host so
+`songs.json`/`conflicts.json`/`ratings.json` land in your working copy.
+Skip to "Repo tour" below if you're using this path — the manual steps
+underneath are the non-Docker alternative.
+
+## Requirements (manual / non-Docker path)
 
 - Python 3.10+
 - Node 18+
@@ -73,6 +86,7 @@ backend/
   test_normalize.py  # unit tests for normalization rules
   main.py            # Section 2: FastAPI app
   test_main.py       # unit tests for the API
+  Dockerfile
 data/
   songs_part1.json, songs_part2.json   # raw inputs, as given
   songs.json          # generated: clean dataset (run normalize.py first)
@@ -81,8 +95,10 @@ data/
 frontend/
   src/App.jsx          # table, pagination, sort, search, CSV, chart
   src/api.js            # fetch wrappers
+  Dockerfile
 review/
   buggy_api.py           # the AI-generated file under review
+docker-compose.yml
 REVIEW.md, DECISIONS.md, PROMPTS.md, REFLECTION.md
 ```
 

@@ -15,9 +15,10 @@ Decisions are explained in DECISIONS.md. Summary:
     in part1.
 """
 import json
+import os
 from pathlib import Path
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).resolve().parent.parent / "data"))
 NUMERIC_COLS = [
     "danceability", "energy", "acousticness", "tempo",
     "duration_ms", "num_sections", "num_segments", "valence",

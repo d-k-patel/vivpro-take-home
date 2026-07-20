@@ -2,6 +2,7 @@
 the API-shape rationale (esp. the non-unique-title handling and why
 ratings key on id, not title)."""
 import json
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -9,7 +10,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-DATA_DIR = Path(__file__).resolve().parent.parent / "data"
+DATA_DIR = Path(os.environ.get("DATA_DIR", Path(__file__).resolve().parent.parent / "data"))
 SONGS_PATH = DATA_DIR / "songs.json"
 RATINGS_PATH = DATA_DIR / "ratings.json"
 

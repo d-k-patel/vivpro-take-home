@@ -76,89 +76,87 @@ export default function App() {
 
   const totalPages = Math.max(1, Math.ceil(data.total / PAGE_SIZE));
   const displayRows = searchResult ? searchResult.items : data.items;
+  const statusMessage =
+    searchError ||
+    (searchResult && searchResult.count === 0 && `No songs match "${searchResult.query}".`) ||
+    (searchResult && searchResult.count > 1 && `${searchResult.count} songs match "${searchResult.query}".`) ||
+    (error && `Failed to load songs: ${error}`);
+  const statusTone = searchError || error ? "error" : "info";
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-6xl mx-auto px-6 py-10">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">
+    <div className="min-h-screen bg-slate-100 text-[13px]">
+      <div className="max-w-6xl mx-auto px-6 py-8">
+        <header className="mb-4">
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
             Songs Dashboard
           </h1>
-          <p className="text-slate-500 mt-1">
-            {data.total ? `${data.total} songs` : " "} — normalized from two messy Spotify exports
+          <p className="text-slate-500 mt-0.5 text-sm">
+            {data.total ? `${data.total} rows` : " "} · normalized from two messy Spotify exports
           </p>
         </header>
 
-        <section className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 mb-6">
-          <div className="flex flex-wrap gap-2 items-center">
+        {/* Single grid surface: toolbar, header, rows, and footer all inside one bordered panel */}
+        <section className="bg-white border border-slate-300 rounded-md shadow-sm mb-6">
+          <div className="flex flex-wrap gap-2 items-center px-3 py-2 border-b border-slate-200 bg-slate-50 rounded-t-md">
             <input
-              className="flex-1 min-w-[220px] border border-slate-300 rounded-lg px-3.5 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
+              className="flex-1 min-w-[200px] border border-slate-300 rounded px-2.5 py-1 text-sm bg-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400"
               placeholder="Search by title…"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             />
             <button
-              className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-colors cursor-pointer"
+              className="px-3 py-1 rounded border border-indigo-600 bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-700 active:bg-indigo-800 transition-colors cursor-pointer"
               onClick={handleSearch}
             >
               Get Song
             </button>
             {searchResult && (
               <button
-                className="px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer"
+                className="px-3 py-1 rounded border border-slate-300 bg-white text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                 onClick={() => { setSearchResult(null); setSearchInput(""); }}
               >
-                Clear search
+                Clear
               </button>
             )}
             <button
-              className="px-4 py-2 rounded-lg border border-slate-300 text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer ml-auto"
+              className="px-3 py-1 rounded border border-slate-300 bg-white text-sm font-medium text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer ml-auto"
               onClick={downloadCSV}
             >
-              ↓ Download CSV
+              ↓ CSV
             </button>
           </div>
 
-          {searchError && (
-            <p className="mt-3 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
-              {searchError}
-            </p>
+          {statusMessage && (
+            <div
+              className={`px-3 py-1.5 text-sm border-b ${
+                statusTone === "error"
+                  ? "bg-red-50 text-red-700 border-red-100"
+                  : "bg-indigo-50 text-indigo-700 border-indigo-100"
+              }`}
+            >
+              {statusMessage}
+            </div>
           )}
-          {searchResult && searchResult.count === 0 && (
-            <p className="mt-3 text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2">
-              No songs match "{searchResult.query}".
-            </p>
-          )}
-          {searchResult && searchResult.count > 1 && (
-            <p className="mt-3 text-sm text-indigo-700 bg-indigo-50 border border-indigo-100 rounded-lg px-3 py-2">
-              {searchResult.count} songs match "{searchResult.query}".
-            </p>
-          )}
-          {error && (
-            <p className="mt-3 text-sm text-red-600 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
-              Failed to load songs: {error}
-            </p>
-          )}
-        </section>
 
-        <section className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mb-6">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full border-collapse text-[13px] tabular-nums">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50">
+                <tr className="bg-slate-100">
                   {COLUMNS.map((c) => (
                     <th
                       key={c.key}
                       onClick={() => toggleSort(c.key)}
-                      className={`px-4 py-3 text-left font-semibold text-slate-600 cursor-pointer select-none hover:text-indigo-600 transition-colors whitespace-nowrap ${
+                      className={`border border-slate-200 px-3 py-1.5 font-semibold text-slate-700 uppercase text-[11px] tracking-wide cursor-pointer select-none hover:bg-slate-200 transition-colors whitespace-nowrap ${
+                        c.numeric ? "text-right" : "text-left"
+                      } ${
                         c.key === "rating"
-                          ? "sticky right-0 bg-slate-50 border-l border-slate-200 shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.1)]"
+                          ? "sticky right-0 bg-slate-100 shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.15)]"
                           : ""
                       }`}
                     >
                       {c.label}
-                      <span className="text-indigo-500">
+                      <span className="text-indigo-600">
                         {sortBy === c.key ? (order === "asc" ? " ▲" : " ▼") : ""}
                       </span>
                     </th>
@@ -168,7 +166,7 @@ export default function App() {
               <tbody>
                 {loading && !searchResult ? (
                   <tr>
-                    <td className="px-4 py-6 text-slate-400" colSpan={COLUMNS.length}>
+                    <td className="border border-slate-200 px-3 py-4 text-slate-400" colSpan={COLUMNS.length}>
                       Loading…
                     </td>
                   </tr>
@@ -176,22 +174,27 @@ export default function App() {
                   displayRows.map((row, i) => (
                     <tr
                       key={row.id}
-                      className={`group border-b border-slate-100 last:border-0 hover:bg-indigo-50/40 transition-colors ${
-                        i % 2 === 1 ? "bg-slate-50/60" : ""
+                      className={`group hover:bg-indigo-50 transition-colors ${
+                        i % 2 === 1 ? "bg-slate-50" : "bg-white"
                       }`}
                     >
                       {COLUMNS.map((c) =>
                         c.key === "rating" ? (
                           <td
                             key={c.key}
-                            className={`px-4 py-2.5 sticky right-0 border-l border-slate-200 shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.1)] group-hover:bg-indigo-50/40 transition-colors ${
-                              i % 2 === 1 ? "bg-slate-50/60" : "bg-white"
+                            className={`border border-slate-200 px-3 py-1 sticky right-0 shadow-[-4px_0_6px_-4px_rgba(0,0,0,0.15)] group-hover:bg-indigo-50 transition-colors ${
+                              i % 2 === 1 ? "bg-slate-50" : "bg-white"
                             }`}
                           >
                             <StarRating value={row.rating} onRate={(n) => handleRate(row.id, n)} />
                           </td>
                         ) : (
-                          <td key={c.key} className="px-4 py-2.5 text-slate-700 whitespace-nowrap">
+                          <td
+                            key={c.key}
+                            className={`border border-slate-200 px-3 py-1 text-slate-700 whitespace-nowrap ${
+                              c.numeric ? "text-right" : "text-left"
+                            }`}
+                          >
                             {row[c.key] ?? <span className="text-slate-300">—</span>}
                           </td>
                         )
@@ -204,28 +207,29 @@ export default function App() {
           </div>
 
           {!searchResult && (
-            <div className="flex gap-3 items-center px-4 py-3 border-t border-slate-200 bg-slate-50">
+            <div className="flex gap-3 items-center px-3 py-1.5 border-t border-slate-200 bg-slate-50 rounded-b-md text-sm">
               <button
-                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-sm font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors cursor-pointer"
+                className="px-2.5 py-1 rounded border border-slate-300 bg-white font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors cursor-pointer"
                 disabled={page <= 1}
                 onClick={() => setPage(page - 1)}
               >
                 ← Prev
               </button>
-              <span className="text-sm text-slate-500">Page {page} of {totalPages}</span>
+              <span className="text-slate-500">Page {page} of {totalPages}</span>
               <button
-                className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white text-sm font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors cursor-pointer"
+                className="px-2.5 py-1 rounded border border-slate-300 bg-white font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-white transition-colors cursor-pointer"
                 disabled={page >= totalPages}
                 onClick={() => setPage(page + 1)}
               >
                 Next →
               </button>
+              <span className="text-slate-400 ml-auto">{PAGE_SIZE} rows / page</span>
             </div>
           )}
         </section>
 
-        <section className="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-          <h2 className="text-lg font-semibold text-slate-900">Danceability vs. Energy</h2>
+        <section className="bg-white rounded-md border border-slate-300 shadow-sm p-5">
+          <h2 className="text-base font-semibold text-slate-900">Danceability vs. Energy</h2>
           <p className="text-sm text-slate-500 mt-0.5 mb-4">
             Current page only. Points near danceability &gt; 1 or missing energy
             reflect raw data issues — see DECISIONS.md for how they're flagged.
@@ -239,7 +243,7 @@ export default function App() {
                 cursor={{ strokeDasharray: "3 3" }}
                 content={({ payload }) =>
                   payload && payload[0] ? (
-                    <div className="bg-white border border-slate-200 shadow-lg rounded-lg px-3 py-2 text-sm">
+                    <div className="bg-white border border-slate-200 shadow-lg rounded px-3 py-2 text-sm">
                       <strong className="text-slate-900">{payload[0].payload.title}</strong>
                       <div className="text-slate-600">danceability: {payload[0].payload.danceability}</div>
                       <div className="text-slate-600">energy: {payload[0].payload.energy ?? "missing"}</div>

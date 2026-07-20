@@ -1,14 +1,14 @@
 export const COLUMNS = [
   { key: "title", label: "Title" },
-  { key: "danceability", label: "Danceability" },
-  { key: "energy", label: "Energy" },
-  { key: "mood", label: "Mood" },
-  { key: "acousticness", label: "Acousticness" },
-  { key: "tempo", label: "Tempo" },
-  { key: "duration_ms", label: "Duration (ms)" },
-  { key: "num_sections", label: "Sections" },
-  { key: "num_segments", label: "Segments" },
-  { key: "valence", label: "Valence" },
+  { key: "danceability", label: "Danceability", numeric: true },
+  { key: "energy", label: "Energy", numeric: true },
+  { key: "mood", label: "Mood", numeric: true },
+  { key: "acousticness", label: "Acousticness", numeric: true },
+  { key: "tempo", label: "Tempo", numeric: true },
+  { key: "duration_ms", label: "Duration (ms)", numeric: true },
+  { key: "num_sections", label: "Sections", numeric: true },
+  { key: "num_segments", label: "Segments", numeric: true },
+  { key: "valence", label: "Valence", numeric: true },
   { key: "rating", label: "Rating" },
 ];
 

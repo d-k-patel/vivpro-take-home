@@ -1,15 +1,15 @@
 export const COLUMNS = [
-  { key: "title", label: "Title" },
-  { key: "danceability", label: "Danceability", numeric: true },
-  { key: "energy", label: "Energy", numeric: true },
-  { key: "mood", label: "Mood", numeric: true },
-  { key: "acousticness", label: "Acousticness", numeric: true },
-  { key: "tempo", label: "Tempo", numeric: true },
-  { key: "duration_ms", label: "Duration (ms)", numeric: true },
-  { key: "num_sections", label: "Sections", numeric: true },
-  { key: "num_segments", label: "Segments", numeric: true },
-  { key: "valence", label: "Valence", numeric: true },
-  { key: "rating", label: "Rating" },
+  { key: "title", label: "Title", width: 138 },
+  { key: "danceability", label: "Danceability", numeric: true, width: 104 },
+  { key: "energy", label: "Energy", numeric: true, width: 70 },
+  { key: "mood", label: "Mood", numeric: true, width: 58 },
+  { key: "acousticness", label: "Acousticness", numeric: true, width: 104 },
+  { key: "tempo", label: "Tempo", numeric: true, width: 82 },
+  { key: "duration_ms", label: "Duration (ms)", numeric: true, width: 108 },
+  { key: "num_sections", label: "Sections", numeric: true, width: 72 },
+  { key: "num_segments", label: "Segments", numeric: true, width: 82 },
+  { key: "valence", label: "Valence", numeric: true, width: 74 },
+  { key: "rating", label: "Rating", width: 108 },
 ];
 
 export function toCSV(rows) {

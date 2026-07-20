@@ -139,15 +139,20 @@ export default function App() {
             </div>
           )}
 
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-[13px] tabular-nums">
+          <div className="overflow-x-auto overflow-y-hidden">
+            <table className="border-collapse text-[13px] tabular-nums table-fixed" style={{ width: COLUMNS.reduce((sum, c) => sum + c.width, 0) }}>
+              <colgroup>
+                {COLUMNS.map((c) => (
+                  <col key={c.key} style={{ width: c.width }} />
+                ))}
+              </colgroup>
               <thead>
                 <tr className="bg-slate-100">
                   {COLUMNS.map((c) => (
                     <th
                       key={c.key}
                       onClick={() => toggleSort(c.key)}
-                      className={`border border-slate-200 px-3 py-1.5 font-semibold text-slate-700 uppercase text-[11px] tracking-wide cursor-pointer select-none hover:bg-slate-200 transition-colors whitespace-nowrap ${
+                      className={`border border-slate-200 px-3 py-1.5 font-semibold text-slate-700 uppercase text-[11px] tracking-wide cursor-pointer select-none hover:bg-slate-200 transition-colors truncate ${
                         c.numeric ? "text-right" : "text-left"
                       } ${
                         c.key === "rating"
@@ -191,7 +196,8 @@ export default function App() {
                         ) : (
                           <td
                             key={c.key}
-                            className={`border border-slate-200 px-3 py-1 text-slate-700 whitespace-nowrap ${
+                            title={row[c.key] ?? undefined}
+                            className={`border border-slate-200 px-3 py-1 text-slate-700 truncate ${
                               c.numeric ? "text-right" : "text-left"
                             }`}
                           >

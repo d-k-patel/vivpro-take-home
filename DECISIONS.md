@@ -13,13 +13,17 @@ those by title would have silently deleted a real row.
 **Conflict resolution: part2 wins.** Of the 4 overlapping ids, only one
 field on one song actually disagreed: `danceability` for "Never Gonna
 Give You Up" (0.727 in part1 vs 0.74 in part2). I took part2's value
-because part2 is the newer export (later timestamp in the file
-metadata) and carries a superset of columns (`valence`), suggesting
-it's the more recent/complete pipeline run. I did **not** just silently
-overwrite and move on — the discarded value is preserved in
-`data/conflicts.json` so the decision is auditable, not just asserted.
-With more time/context I'd ask the upstream team which pipeline is
-authoritative rather than guessing from recency.
+because part2 carries a superset of columns (`valence`) that part1
+doesn't have — the only concrete evidence in the files themselves
+about which pipeline is more complete. I want to be precise about what
+this is and isn't: it is not based on a file timestamp or any export
+metadata — neither JSON file contains any, only the data columns
+themselves — so "part2 is newer" is an assumption I'm making from file
+naming and column superset, not something the data can actually prove.
+I did **not** just silently overwrite and move on — the discarded
+value is preserved in `data/conflicts.json` so the decision is
+auditable, not just asserted. With more time/context I'd ask the
+upstream team which pipeline is authoritative rather than guessing.
 
 **Missing/malformed/out-of-range values — flagged, not dropped.**
 Every row that needed a repair keeps a `_flags` list naming exactly

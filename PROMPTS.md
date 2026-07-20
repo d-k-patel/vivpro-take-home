@@ -1,11 +1,17 @@
 # PROMPTS.md — AI collaboration log
 
 Tool: Claude Code (Sonnet 5), agentic CLI with file read/write/bash
-access. This is a real session log, reconstructed from the actual
-conversation, not written after the fact from memory. I drove this
-session directly — there was no separate "junior engineer" persona;
-I am the candidate, using the AI as my coding tool for this exercise
-exactly as the take-home invites.
+access. I drove this session directly — there was no separate "junior
+engineer" persona; I am the candidate, using the AI as my coding tool
+for this exercise exactly as the take-home invites.
+
+**This file is a themed summary. `SESSION_LOG.md` is the primary
+source** — the actual prompts, in order, with what happened after
+each one, including two places I was directly corrected mid-session
+and changed course. Read that one if you want the ground truth instead
+of my after-the-fact narrative; this file organizes the same material
+by theme (steering moments, where AI got it right/wrong) for faster
+scanning.
 
 ## Session shape
 
@@ -99,6 +105,50 @@ building a second "fetch everything" code path that the spec didn't
 ask for. A tempting AI-generated "while we're at it" addition would
 have been an unrequested `/songs/all` endpoint; I left it out and
 named the trade-off instead.
+
+**Got direct pushback on shallow Tailwind work and redid it properly.**
+After being asked to add Tailwind, my first pass was a mechanical
+class-for-class port of the existing plain CSS — same look, different
+syntax, no actual design improvement. Told directly: "the whole
+purpose of adding tailwind css was to enhance the styling." That's a
+fair correction, not a style nitpick — I'd technically satisfied the
+literal ask while missing its intent. Redid it as a real visual pass
+(card sections, accent color, zebra rows, button hierarchy) rather
+than defending the first attempt.
+
+**A scrollbar bug took three attempts because I trusted a screenshot
+over a measurement the first two times.** Asked to fix a clipped
+Rating column, then later a persistent horizontal scrollbar. The first
+fix (sticky column) was correct for the clipping. The scrollbar
+recurred after further styling changes; my first two fix attempts
+(`overflow-y-hidden`, then a `max-width` + `truncate` span) looked
+plausible and I moved on each time without verifying — the actual fix
+required realizing that individual-cell CSS doesn't constrain a
+column's width under table-auto layout, only `table-fixed` with
+explicit `<colgroup>` widths does. I only caught that my first two
+"fixes" hadn't worked by writing a small script to measure
+`scrollWidth` vs `clientWidth` directly in the browser instead of
+eyeballing a screenshot — the second attempt looked fine in a
+screenshot at one viewport width and was still broken. Lesson I'd
+flag to a reviewer: I under-verified twice in a row here before
+switching to a measurement-based check, which is exactly the kind of
+AI-assisted "looks right, isn't" failure mode this section is supposed
+to surface.
+
+**An independent Opus-4.8 audit caught a fabricated detail in
+DECISIONS.md.** I asked for an adversarial, independent audit of the
+whole submission against the take-home's actual rubric. It found that
+DECISIONS.md justified preferring `songs_part2.json` on conflict partly
+by citing "a later timestamp in the file metadata" — I checked, and
+neither JSON file has any metadata at all, only data columns. That
+detail was invented; the underlying decision (part2 wins) still stands
+on the other, real justification (part2's superset of columns), but
+the fabricated clause was a genuine problem I would not have caught
+without an adversarial second pass, and I would not have caught it by
+re-reading my own write-up more carefully — it read as confident and
+plausible. Fixed in DECISIONS.md; the corrected version is explicit
+that "part2 is newer" is an inferred assumption, not something the
+data can prove.
 
 ## Where the AI got it right the first time
 

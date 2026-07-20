@@ -18,15 +18,25 @@ table/pagination/sort wiring, and the pytest fixtures. None of that is
 interesting; having it typed out in seconds let me spend the actual time
 on the data exploration and the review.
 
-**Nearly led me wrong:** my first pass at the normalization script flagged
-every part1-only row as `valence_missing`, because valence is a real
-column in part2. That's technically true but misleading — it conflates
-"this source never had this column" with "this value was supposed to
-exist and doesn't." I caught it by noticing 20 of 25 rows had at least
-one flag, which was suspiciously high, and traced it back. The fix was
-to pass whether the source file has `valence` at all into the row cleaner,
-so absence-by-schema and absence-by-defect are distinguished. See
-PROMPTS.md for the actual exchange.
+**Nearly led me wrong (x2):** my first pass at the normalization script
+flagged every part1-only row as `valence_missing`, because valence is a
+real column in part2. That's technically true but misleading — it
+conflates "this source never had this column" with "this value was
+supposed to exist and doesn't." I caught it by noticing 20 of 25 rows
+had at least one flag, which was suspiciously high, and traced it back.
+
+Separately, after submission I asked for an independent audit of the
+whole thing, and it caught something I'd written myself and not
+noticed: DECISIONS.md claimed part2 was preferred on conflict partly
+because of "a later timestamp in the file metadata" — neither JSON
+file actually has any metadata. I'd written a plausible-sounding
+justification without checking it was literally true, and it read
+confidently enough that I didn't catch it re-reading my own draft. The
+underlying decision was still fine on other grounds; the specific
+claim wasn't. See PROMPTS.md and SESSION_LOG.md for both exchanges in
+full — the second one especially is the kind of "looks right, isn't"
+failure this reflection question is asking about, and I'd rather
+report it than not.
 
 ## 3. What in the data surprised you? What did you decide not to fix, and why?
 

@@ -100,6 +100,7 @@ review/
   buggy_api.py           # the AI-generated file under review
 docker-compose.yml
 REVIEW.md, DECISIONS.md, PROMPTS.md, REFLECTION.md
+SESSION_LOG.md   # primary source for PROMPTS.md: real prompts, in order
 ```
 
 ## Notes

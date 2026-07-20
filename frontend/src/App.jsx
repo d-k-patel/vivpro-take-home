@@ -75,6 +75,7 @@ export default function App() {
   }
 
   const totalPages = Math.max(1, Math.ceil(data.total / PAGE_SIZE));
+  const totalColumnWidth = COLUMNS.reduce((sum, c) => sum + c.width, 0);
   const displayRows = searchResult ? searchResult.items : data.items;
   const statusMessage =
     searchError ||
@@ -140,10 +141,13 @@ export default function App() {
           )}
 
           <div className="overflow-x-auto overflow-y-hidden">
-            <table className="border-collapse text-[13px] tabular-nums table-fixed" style={{ width: COLUMNS.reduce((sum, c) => sum + c.width, 0) }}>
+            <table
+              className="border-collapse text-[13px] tabular-nums table-fixed"
+              style={{ width: `max(100%, ${totalColumnWidth}px)` }}
+            >
               <colgroup>
                 {COLUMNS.map((c) => (
-                  <col key={c.key} style={{ width: c.width }} />
+                  <col key={c.key} style={{ width: `${(c.width / totalColumnWidth) * 100}%` }} />
                 ))}
               </colgroup>
               <thead>
